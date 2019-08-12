@@ -1,0 +1,302 @@
+#: import FadeTransition kivy.uix.screenmanager.FadeTransition
+#: import Window kivy.core.window.Window
+#: import Factory kivy.factory.Factory
+
+ScreenManagement:
+    transition: FadeTransition()
+    MainScreen:
+    CameraScreen:
+		id: camerascreen
+	ConfigScreen:
+		id: configscreen
+
+<LabeledCheckbox>:
+    Label:
+        text: root.text
+    CheckBox:
+        active: root.active
+		on_active: app.setActive(root.text, self.active)
+
+<DragLabel>:
+	# Define the properties for the DragLabel
+	pos_hint: {0, 0}
+	drag_rectangle: self.x, self.y, self.width, self.height
+	drag_timeout: 10000000
+	drag_distance: 0
+	
+<MainScreen>:
+	name: "main"
+	
+	BoxLayout:
+		orientation: 'vertical'
+		spacing: 20
+		padding: 20
+		
+		#Slider:
+		#	id: slider_id
+		#	min: 0
+		#	max: 1
+		#	value: .5
+		
+		Label:
+			id: label_id
+			name: "label_id"
+			text: "Teste - Aplicativo de Telemetria"
+			#text: str(slider_id.value) #Essa linha serve para mostrar o valor do slider no label
+			font_size: 25
+		
+		AsyncImage:
+			source: 'dron2.png'
+			pos: self.pos
+			size: self.size
+			
+		Button: 
+			on_release: app.root.current = "camera"
+			#on_release: app.pressed(label_id) #Isso aqui serve pra chamar a função 'pressed' no widget de id 'label_id'
+
+			text: "Acessar câmera"
+			font_size: 14
+			size_hint: 0.3, 0.3
+			pos_hint: {'right': 0.65}
+			
+		Button: 
+			on_release: app.root.current = "confs"
+			text: "Configurações"
+			font_size: 14
+			size_hint: 0.3, 0.3
+			pos_hint: {'right': 0.65}
+		
+
+<CameraScreen>:
+    name: "camera"
+	
+	BoxLayout:
+		orientation: 'vertical'
+		id: cameraId
+		
+		BoxLayout:
+			Image:
+				id: videos
+
+		#Video:
+		#	source: 'SpaceOddity.mp4'
+		#	state: 'play'
+		#	play: True
+		#	id: videos
+			
+			#DragLabel:
+			#	id: velocity_id
+			#	text: "TESTE"
+			#DragLabel:
+			#	id: attitude_id
+			#	text: "TESTE2"
+			#DragLabel:
+			#	id: battery_id
+			#	text: "TESTE3"
+			#DragLabel:
+			#	id: last_heartbeat_id
+			#	text: "TESTE4"
+			#DragLabel:
+			#	id: gps_id
+			#	text: "TESTE5"
+		
+		#AsyncImage:
+		#	source: 'appdronecamera.png'
+		#	pos: self.pos
+		#	#size: self.size
+		#	size_hint: 1.0, 0.9
+		
+		Button: 
+			on_release: app.root.current = "main"
+			text: "Back Home"
+			font_size: 22
+			size_hint: 1, 0.1
+		
+<ConfigScreen>:
+	name: "confs"
+	BoxLayout:
+		orientation: 'vertical'
+		
+		#Spinner:
+		#	id: spin_id
+		#	text: 'Selecione o controlador:'
+		#	values: ('APM 2.5', 'Pixhawk', 'Beagle Bone Blue', 'CUAV v5')
+		#	size_hint: 0.5, 0.1
+		#	pos_hint: {'right': 0.75}
+			#####on_text: spin_id.text = 'Pou' #O que acontece quando uma opção é selecionada
+			#on_text: Factory.Conectar().open();
+		Button:
+			id: spin_id
+			text: 'Configurações do controlador'
+			size_hint: 0.5, 0.1
+			pos_hint: {'right': 0.75}
+			on_release: Factory.Conectar().open();			
+		
+		Widget:
+			size_hint: 0.5, 0.005
+		
+		ScrollView:
+			size_hint: 0.8, 0.5 #None
+			pos_hint: {'right': 0.9}
+			GridLayout:
+				id: container
+				cols: 4
+				row_default_height: '50sp'
+				size_hint_y: None
+				height: self.minimum_height
+				
+				#LabeledCheckbox:
+				#	text: "Teste"
+		
+		Widget:
+			size_hint: 0.5, 0.005
+		
+		Button: 
+			text: "Configurações do Servidor"
+			size_hint: 0.4, 0.1
+			pos_hint: {'right': 0.7}
+			on_release: Factory.Server().open();
+		
+		Widget:
+			size_hint: 0.5, 0.005		
+		
+		Button: 
+			text: "Voltar"
+			font_size: 22
+			size_hint: 0.5, 0.1
+			pos_hint: {'right': 0.75}
+			on_release: app.root.current = "main"
+			
+<Conectar@Popup>:
+    title: 'Configurações do Controlador'
+    size_hint: None, None
+    size:
+        (
+        self.ids.container.minimum_width + self.border[1] + self.border[3],
+        self.ids.container.minimum_height + 60
+        )
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        size_hint: None, None
+        size: self.minimum_size
+		
+		Spinner:
+			id: my_spinner
+			text: 'Selecionar parâmetro de conexão'
+			values: ('IP', 'SITL', 'USB')
+			on_text: 
+			    if(my_spinner.text == 'IP'): box_ip_id.changeOpacity(1); box_ip_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0)
+				elif(my_spinner.text == 'SITL'): box_sitl_id.changeOpacity(1); box_sitl_id.changeHeight(30); box_ip_id.changeOpacity(0); box_ip_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0)
+				elif(my_spinner.text == 'USB'): box_usb_id.changeOpacity(1); box_usb_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_ip_id.changeHeight(0); box_ip_id.changeOpacity(0);
+				
+				
+			size_hint_y: None
+            width: self.texture_size[0] + 20
+		
+        MyBoxLayout:
+			id: box_ip_id
+			opacity: 0
+            size_hint: None, None
+            size: self.minimum_size
+			height: 0
+            Label:
+                text: 'Ip:'
+                size_hint_x: None
+                width: 40
+            TextInput:
+				id: ip_id
+                size_hint: None, None
+                height: self.minimum_height
+                width: 200
+                multiline: False
+            Button:
+                text: 'Conectar'
+                size_hint_x: None
+                width: self.texture_size[0] + 20
+                #on_press:
+				
+		MyBoxLayout:
+			id: box_sitl_id
+			opacity: 0
+            size_hint: None, None
+            size: self.minimum_size
+			height: 0
+			Button:
+				id: sitl_button
+				text: 'Conectar(SITL)'
+				size_hint_x: None
+				width: self.texture_size[0] + 250
+				on_press: app.conectarSITL()
+				
+		MyBoxLayout:
+			id: box_usb_id
+			opacity: 0
+			size_hint: None, None
+			size: self.minimum_size
+			height: 0
+			Button:
+				text: 'Conectar(com7)'
+				size_hint_x: None
+				width: self.texture_size[0] + 250
+				on_release: app.conectarUSB()
+        Button:
+            size_hint_y: None
+            height: 48
+            text: 'Voltar'
+            on_press: root.dismiss()
+
+<Server@Popup>:
+    title: 'Configurações do Servidor'
+	id: servidor
+    size_hint: None, None
+    size:
+        (
+        self.ids.container.minimum_width + self.border[1] + self.border[3],
+        self.ids.container.minimum_height + 60
+        )
+	
+	BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        size_hint: None, None
+        size: self.minimum_size
+		
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: None, None
+			size: self.minimum_size
+			Label:
+				text: 'Ip:'
+				size_hint_x: None
+				width: 40
+			TextInput:
+				id: ip_server_id
+				size_hint: None, None
+				height: self.minimum_height
+				width: 200
+				multiline: False
+		
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: None, None
+			size: self.minimum_size
+			Label:
+				text: 'Port:'
+				size_hint_x: None
+				width: 40
+			TextInput:
+				text: '5555'
+				id: port_server_id
+				size_hint: None, None
+				height: self.minimum_height
+				width: 200
+				multiline: False
+				
+		Button:
+			size_hint_y: None
+            height: 48
+			text: 'Salvar e Sair'
+			on_release: app.connect_server(root.ids.ip_server_id, root.ids.port_server_id); root.dismiss();

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Handlebars load template</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script>
+			setInterval(function(){ document.getElementById("ItemPreview").src = "{{message}}" }, 1000);
+		</script>
+	</head>
+
+	<body>
+		<img id= "ItemPreview" src= {{message}}>
+	</body>
+	
+</html>

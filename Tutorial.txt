@@ -1,0 +1,27 @@
+Pré-requisitos:
+
+Python(preferencial 2.7): https://www.python.org/downloads/release/python-2716/
+
+Console=>
+Dronekit: pip install dronekit
+OpenCV:   pip install opencv-python
+Serial:   pip install pyserial
+(talvez sejam precisos outros pacotes do python, checar por erros)
+
+NODE.JS
+
+Download: https://nodejs.org/dist/v10.16.0/node-v10.16.0.pkg
+
+Console=>
+ npm install socket.io
+ npm install express
+ npm install express-handlebars
+
+Opcional:
+Dronekit SITL(simulador): pip install dronekit-sitl
+
+
+Como iniciar o servidor NodeJS:
+No terminal, vá até a pasta onde se encontra o arquivo 'javascriptServer.js', e rode o seguinte comando: node javascriptServer.js
+Após isso, vá até o aplicativo e navegue até o menu 'Configurações'->'Configurações do Servidor', defina um ip local qualquer e clique em:
+'Salvar e Sair', após isso o cliente vai se conectar com o servidor NodeJS. [Importante deixar o console do servidor aberto]
