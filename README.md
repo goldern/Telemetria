@@ -4,6 +4,7 @@ Projeto produzido na Framework multiplataforma Kivy utilizando as bibliotecas:
 - Dronekit-Python
 - OpenCV
 - Socket.io
+
 Projeto feito durante o período da Iniciação Científica - bolsista ICB (2018-2019)
 
 Capacidades:
