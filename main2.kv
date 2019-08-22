@@ -41,7 +41,7 @@ ScreenManagement:
 		Label:
 			id: label_id
 			name: "label_id"
-			text: "Teste - Aplicativo de Telemetria"
+			text: "Aplicativo de Telemetria"
 			#text: str(slider_id.value) #Essa linha serve para mostrar o valor do slider no label
 			font_size: 25
 		
@@ -108,7 +108,7 @@ ScreenManagement:
 		
 		Button: 
 			on_release: app.root.current = "main"
-			text: "Back Home"
+			text: "Voltar"
 			font_size: 22
 			size_hint: 1, 0.1
 		
@@ -187,9 +187,9 @@ ScreenManagement:
 			text: 'Selecionar parâmetro de conexão'
 			values: ('IP', 'SITL', 'USB')
 			on_text: 
-			    if(my_spinner.text == 'IP'): box_ip_id.changeOpacity(1); box_ip_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0)
-				elif(my_spinner.text == 'SITL'): box_sitl_id.changeOpacity(1); box_sitl_id.changeHeight(30); box_ip_id.changeOpacity(0); box_ip_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0)
-				elif(my_spinner.text == 'USB'): box_usb_id.changeOpacity(1); box_usb_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_ip_id.changeHeight(0); box_ip_id.changeOpacity(0);
+			    if(my_spinner.text == 'IP'): box_ip_id.changeOpacity(1); box_ip_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0); usbButton.width = 0;
+				elif(my_spinner.text == 'SITL'): box_sitl_id.changeOpacity(1); box_sitl_id.changeHeight(30); box_ip_id.changeOpacity(0); box_ip_id.changeHeight(0); box_usb_id.changeOpacity(0); box_usb_id.changeHeight(0); usbButton.width = 0;
+				elif(my_spinner.text == 'USB'): box_usb_id.changeOpacity(1); box_usb_id.changeHeight(30); box_sitl_id.changeOpacity(0); box_sitl_id.changeHeight(0); box_ip_id.changeOpacity(0); box_ip_id.changeHeight(0); usbButton.width = usbButton.texture_size[0] + 250;
 				
 				
 			size_hint_y: None
@@ -236,11 +236,32 @@ ScreenManagement:
 			size_hint: None, None
 			size: self.minimum_size
 			height: 0
-			Button:
-				text: 'Conectar(com7)'
-				size_hint_x: None
-				width: self.texture_size[0] + 250
-				on_release: app.conectarUSB()
+			BoxLayout:
+				orientation: 'vertical'
+				size_hint: None, None
+				Widget:
+					size_hint: None, None
+					height: 16
+				BoxLayout:
+					orientation: 'horizontal'
+					Label:
+						text: "Com Port:"
+					TextInput:
+						id: comText
+						size_hint: None, None
+						width: 32
+						height: 32
+						multiline: False
+						input_filter: 'int'
+				Widget:
+					size_hint: None, None
+					height: 16
+				Button:
+					id: usbButton
+					text: 'Conectar(com)'
+					size_hint_x: None
+					width: self.texture_size[0] + 250
+					on_release: app.conectarUSB(comText.text)
         Button:
             size_hint_y: None
             height: 48

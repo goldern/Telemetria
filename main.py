@@ -1,7 +1,8 @@
-# -*- coding: cp1252 -*-
+#!/usr/bin/env python
+# encoding: utf-8
 
 
-##PrÈ-requisitos:
+##Pr√©-requisitos:
 #
 #Dronekit: pip install dronekit
 #OpenCV: pip install opencv-python
@@ -16,7 +17,7 @@
 #Dronekit SITL(simulador): pip install dronekit-sitl
 
 from kivy.app import App
-#kivy.require("1.11.1")
+#kivy.require("1.10.1")
 
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.properties import StringProperty, BooleanProperty
@@ -51,13 +52,13 @@ dronekit_logger.setLevel(logging.DEBUG)
 import cv2
 # Import DroneKit-Python
 from dronekit import connect, VehicleMode
+# Import Serial Port searcher
+import serial.tools.list_ports
 
 # Define app as current app
 app = App.get_running_app()
 # Define globals
 vehicle = None
-server_ip = None
-server_port = None
 servidor = None
 # Define global dictionary
 global dictValues
@@ -81,7 +82,7 @@ class MainScreen(Screen):
     
 class CameraScreen(Screen):
     addedWidgets = []
-    #Definir vari·veis tempor·rias
+    #Definir vari√°veis tempor√°rias
     oldVelocity = None
     oldAtitude = None
     oldBattery = None
@@ -125,13 +126,13 @@ class CameraScreen(Screen):
                 self.oldGPS = x.text
                 x.size = x.texture_size
 
-        coreImage = self.ids.cameraId.export_as_image()
-        png = BytesIO()
-        coreImage.save(png, fmt='png')
-        png.seek(0)
-        byte = png.read()
         # Se estiver conectado, enviar bytes ao servidor
         if(servidor != None):
+            coreImage = self.ids.cameraId.export_as_image()
+            png = BytesIO()
+            coreImage.save(png, fmt='png')
+            png.seek(0)
+            byte = png.read()
             servidor.emit('message', byte)
 
     def update2(self, dt):
@@ -215,7 +216,7 @@ class MainApp(App):
         import dronekit_sitl
         sitl = dronekit_sitl.start_default()
         connection_string = sitl.connection_string()
-        # Conectar ao veÌculo
+        # Conectar ao ve√≠culo
         print("Connecting to vehicle on: %s" % (connection_string,))
         vehicle = connect(connection_string, wait_ready=True)
 
@@ -232,12 +233,12 @@ class MainApp(App):
                     "Heartbeat":  False}
         with open('varstatus.txt', 'w') as f:
             f.write(json.dumps(dictValues))
-    def conectarUSB(self):
+    def conectarUSB(self, comPort):
         global vehicle
         print("Start USB serial port search (COM)")
 
         #Procurar a porta serial aqui
-        connection_string = "com7"
+        connection_string = "com" + comPort
         
         print("Connecting to vehicle on: %s" % (connection_string,))
         try:
@@ -254,22 +255,20 @@ class MainApp(App):
                         "Heartbeat":  False}
             with open('varstatus.txt', 'w') as f:
                 f.write(json.dumps(dictValues))
-            print("Connection success")
         except:
-            print("Connection failed")
+            pass
     def addLabeledCheckbox(self, texto):
         app = App.get_running_app()
         app.root.ids.configscreen.ids.container.add_widget(LabeledCheckbox(text= texto, active= False))
     def connect_server(self, sip, sport): # O QUE ACONTECE AO PRESSIONAR 'CONECTAR' NO MENU DO SERVIDOR
-        global server_ip
-        global server_port
         global servidor
-        app = App.get_running_app()
-        server_ip = sip.text
-        server_port = sport.text        
         try:
             servidor = socketio.Client(binary=True)
-            servidor.connect('http://'+server_ip+':'+server_port)
+            servidor.connect('http://'+sip.text+':'+sport.text)
+
+            httpd = SocketServer.ThreadingTCPServer(('', int(sport.text)), my_handler)
+            httpd.serve_forever()
+            
             print("Connection success")
         except:
             print("Connection failed")
